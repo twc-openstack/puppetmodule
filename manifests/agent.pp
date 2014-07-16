@@ -27,6 +27,8 @@
 #   ['templatedir']           - Template dir, if unset it will remove the setting.
 #   ['configtimeout']         - How long the client should wait for the configuration to be retrieved before considering it a failure
 #   ['stringify_facts']       - Wether puppet transforms structured facts in strings or no. Defaults to true in puppet < 4, deprecated in puppet >=4 (and will default to false)
+#   ['http_proxy_host']       - The hostname of an HTTP proxy to use for agent -> master connections
+#   ['http_proxy_port']       - The port to use when puppet uses an HTTP proxy
 #
 # Actions:
 # - Install and configures the puppet agent
@@ -76,6 +78,8 @@ class puppet::agent(
   $agent_noop             = undef,
   $usecacheonfailure      = undef,
   $certname               = undef,
+  $http_proxy_host        = undef,
+  $http_proxy_port        = undef,
 ) inherits puppet::params {
 
   if ! defined(User[$::puppet::params::puppet_user]) {
@@ -373,6 +377,20 @@ class puppet::agent(
       setting => 'priority',
       value   => $priority,
       section => 'main',
+    }
+  }
+  if $http_proxy_host != undef {
+    ini_setting {'puppetagenthttpproxyhost':
+      ensure  => present,
+      setting => 'http_proxy_host',
+      value   => $http_proxy_host,
+    }
+  }
+  if $http_proxy_port != undef {
+    ini_setting {'puppetagenthttpproxyport':
+      ensure  => present,
+      setting => 'http_proxy_port',
+      value   => $http_proxy_port,
     }
   }
 }

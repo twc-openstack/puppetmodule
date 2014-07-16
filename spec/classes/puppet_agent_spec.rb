@@ -575,4 +575,56 @@ describe 'puppet::agent', :type => :class do
       }
     end
   end
+  describe 'puppetagenthttpproxyhost' do
+    let(:facts) do
+      {
+        :osfamily        => 'RedHat',
+        :operatingsystem => 'RedHat',
+        :kernel          => 'Linux'
+      }
+    end
+    context 'with http_proxy_host set' do
+      let(:params) do
+        {
+          :http_proxy_host => 'proxy.example.com',
+        }
+      end
+
+      it{
+        should contain_ini_setting('puppetagenthttpproxyhost').with(
+          :ensure  => 'present',
+          :section => 'agent',
+          :setting => 'http_proxy_host',
+          :value   => 'proxy.example.com',
+          :path    => '/etc/puppet/puppet.conf'
+        )
+      }
+    end
+  end
+  describe 'puppetagenthttpproxyport' do
+    let(:facts) do
+      {
+        :osfamily        => 'RedHat',
+        :operatingsystem => 'RedHat',
+        :kernel          => 'Linux'
+      }
+    end
+    context 'with http_proxy_port set' do
+      let(:params) do
+        {
+          :http_proxy_port => '1234',
+        }
+      end
+
+      it{
+        should contain_ini_setting('puppetagenthttpproxyport').with(
+          :ensure  => 'present',
+          :section => 'agent',
+          :setting => 'http_proxy_port',
+          :value   => '1234',
+          :path    => '/etc/puppet/puppet.conf'
+        )
+      }
+    end
+  end
 end
