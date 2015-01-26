@@ -206,6 +206,7 @@ class puppet::agent(
   elsif($use_srv_records == false)
   {
     ini_setting {'puppetagentsrv_domain':
+      ensure  => absent,
       setting => 'srv_domain',
     }
   }
