@@ -33,6 +33,7 @@
 #  ['dns_alt_names']            - Comma separated list of alternative DNS names
 #  ['digest_algorithm']         - The algorithm to use for file digests.
 #  ['generate_ssl_certs']       - Generate ssl certs (false to disable)
+#  ['serialization_format']     - defaults to undef, otherwise it sets the preferred_serialization_format param (currently only msgpack is supported)
 #
 # Requires:
 #
@@ -87,6 +88,7 @@ class puppet::master (
   $digest_algorithm           = $::puppet::params::digest_algorithm,
   $generate_ssl_certs         = true,
   $puppetdb_version           = 'present',
+  $serialization_format       = undef,
 ) inherits puppet::params {
 
   anchor { 'puppet::master::begin': }
@@ -313,6 +315,20 @@ class puppet::master (
       setting => 'digest_algorithm',
       value   => $digest_algorithm,
   }
-
+  if $serialization_format != undef {
+    if $serialization_format == 'msgpack' {
+      package {$::puppet::params::ruby_dev:
+        ensure  => 'latest',
+      } ->
+      package {'msgpack':
+        ensure  => 'latest',
+        provide => 'gem',
+      }
+    }
+    ini_setting {'puppetagentserializationformat':
+      setting => 'preferred_serialization_format',
+      value   => $serialization_format
+    }
+  }
   anchor { 'puppet::master::end': }
 }
