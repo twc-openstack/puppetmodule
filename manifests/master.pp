@@ -317,12 +317,19 @@ class puppet::master (
   }
   if $serialization_format != undef {
     if $serialization_format == 'msgpack' {
-      package {$::puppet::params::ruby_dev:
-        ensure  => 'latest',
+      unless defined(Package[$::puppet::params::ruby_dev]) {
+        package {$::puppet::params::ruby_dev:
+          ensure  => 'latest',
+        }
+      } ->
+      unless defined(Package['gcc']) {
+        package {'gcc':
+          ensure  => 'latest',
+        }
       } ->
       package {'msgpack':
         ensure  => 'latest',
-        provide => 'gem',
+        provider => 'gem',
       }
     }
     ini_setting {'puppetagentserializationformat':
