@@ -28,6 +28,7 @@
 #   ['configtimeout']         - How long the client should wait for the configuration to be retrieved before considering it a failure
 #   ['stringify_facts']       - Wether puppet transforms structured facts in strings or no. Defaults to true in puppet < 4, deprecated in puppet >=4 (and will default to false)
 #   ['serialization_format']  - defaults to undef, otherwise it sets the preferred_serialization_format param (currently only msgpack is supported)
+#   ['serialization_package'] - defaults to undef, if provided, we install this package, otherwise we fall back to the gem from 'serialization_format'
 #
 # Actions:
 # - Install and configures the puppet agent
@@ -68,6 +69,7 @@ class puppet::agent(
   $configtimeout          = '2m',
   $stringify_facts        = undef,
   $serialization_format   = undef,
+  $serialization_package  = undef,
 ) inherits puppet::params {
 
   if ! defined(User[$::puppet::params::puppet_user]) {
@@ -310,25 +312,31 @@ class puppet::agent(
     }
   }
   if $serialization_format != undef {
-    if $serialization_format == 'msgpack' {
-      unless defined(Package[$::puppet::params::ruby_dev]) {
-        package {$::puppet::params::ruby_dev:
+    if $serialization_package != undef {
+      package { $serialization_package:
+        ensure  => latest,
+      }
+    } else {
+      if $serialization_format == 'msgpack' {
+        unless defined(Package[$::puppet::params::ruby_dev]) {
+          package {$::puppet::params::ruby_dev:
+            ensure  => 'latest',
+          }
+        } ->
+        unless defined(Package['gcc']) {
+          package {'gcc':
+            ensure  => 'latest',
+          }
+        } ->
+        package {'msgpack':
           ensure  => 'latest',
+          provider => 'gem',
         }
-      } ->
-      unless defined(Package['gcc']) {
-        package {'gcc':
-          ensure  => 'latest',
-        }
-      } ->
-      package {'msgpack':
-        ensure  => 'latest',
-        provider => 'gem',
       }
     }
     ini_setting {'puppetagentserializationformat':
       setting => 'preferred_serialization_format',
-      value   => $serialization_format
+      value   => $serialization_format,
     }
   }
 }
