@@ -316,25 +316,31 @@ class puppet::master (
       value   => $digest_algorithm,
   }
   if $serialization_format != undef {
-    if $serialization_format == 'msgpack' {
-      unless defined(Package[$::puppet::params::ruby_dev]) {
-        package {$::puppet::params::ruby_dev:
+    if $serialization_package != undef {
+      package { $serialization_package:
+        ensure  => latest,
+      }
+    } else {
+      if $serialization_format == 'msgpack' {
+        unless defined(Package[$::puppet::params::ruby_dev]) {
+          package {$::puppet::params::ruby_dev:
+            ensure  => 'latest',
+          }
+        } ->
+        unless defined(Package['gcc']) {
+          package {'gcc':
+            ensure  => 'latest',
+          }
+        } ->
+        package {'msgpack':
           ensure  => 'latest',
+          provider => 'gem',
         }
-      } ->
-      unless defined(Package['gcc']) {
-        package {'gcc':
-          ensure  => 'latest',
-        }
-      } ->
-      package {'msgpack':
-        ensure  => 'latest',
-        provider => 'gem',
       }
     }
     ini_setting {'puppetagentserializationformat':
       setting => 'preferred_serialization_format',
-      value   => $serialization_format
+      value   => $serialization_format,
     }
   }
   anchor { 'puppet::master::end': }
