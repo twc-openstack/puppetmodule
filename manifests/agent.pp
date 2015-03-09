@@ -322,15 +322,18 @@ class puppet::agent(
           package {$::puppet::params::ruby_dev:
             ensure  => 'latest',
           }
-        } ->
+        }
         unless defined(Package['gcc']) {
           package {'gcc':
             ensure  => 'latest',
           }
-        } ->
-        package {'msgpack':
-          ensure  => 'latest',
-          provider => 'gem',
+        }
+        unless defined(Package['msgpack']) {
+          package {'msgpack':
+            ensure    => 'latest',
+            provider  => 'gem',
+            require   => Package[$::puppet::params::ruby_dev, 'gcc'],
+          }
         }
       }
     }

@@ -332,10 +332,12 @@ class puppet::master (
             ensure  => 'latest',
           }
         }
-        package {'msgpack':
-          ensure  => 'latest',
-          provider => 'gem',
-          require   => Package[$::puppet::params::ruby_dev, 'gcc'],
+        unless defined(Package['msgpack']) {
+          package {'msgpack':
+            ensure  => 'latest',
+            provider => 'gem',
+            require   => Package[$::puppet::params::ruby_dev, 'gcc'],
+          }
         }
       }
     }
