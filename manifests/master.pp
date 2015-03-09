@@ -326,15 +326,16 @@ class puppet::master (
           package {$::puppet::params::ruby_dev:
             ensure  => 'latest',
           }
-        } ->
+        }
         unless defined(Package['gcc']) {
           package {'gcc':
             ensure  => 'latest',
           }
-        } ->
+        }
         package {'msgpack':
           ensure  => 'latest',
           provider => 'gem',
+          require   => Package[$::puppet::params::ruby_dev, 'gcc'],
         }
       }
     }
