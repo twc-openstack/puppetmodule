@@ -341,7 +341,7 @@ class puppet::master (
         }
       }
     }
-    ini_setting {'puppetagentserializationformat':
+    ini_setting {'puppetagentserializationformatmaster':
       setting => 'preferred_serialization_format',
       value   => $serialization_format,
     }

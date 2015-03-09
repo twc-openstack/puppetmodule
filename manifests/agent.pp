@@ -337,7 +337,7 @@ class puppet::agent(
         }
       }
     }
-    ini_setting {'puppetagentserializationformat':
+    ini_setting {'puppetagentserializationformatagent':
       setting => 'preferred_serialization_format',
       value   => $serialization_format,
     }
