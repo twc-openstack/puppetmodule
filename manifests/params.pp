@@ -31,6 +31,7 @@ class puppet::params {
   $puppetdb_strict_validation       = true
   $environments                     = 'config'
   $digest_algorithm                 = 'md5'
+  $package_provider                 = undef # falls back to system default
 
   # Only used when environments == directory
   $environmentpath                  = "${confdir}/environments"

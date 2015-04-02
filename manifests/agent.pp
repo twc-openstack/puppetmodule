@@ -49,6 +49,7 @@ class puppet::agent(
   $puppet_run_command     = '/usr/bin/puppet agent --no-daemonize --onetime --logdest syslog > /dev/null 2>&1',
   $user_id                = undef,
   $group_id               = undef,
+  $package_provider       = $::puppet::params::package_provider,
 
   #[main]
   $templatedir            = undef,
@@ -96,6 +97,7 @@ class puppet::agent(
   }
   package { $puppet_agent_package:
     ensure   => $version,
+    provider => $package_provider,
   }
 
   if $puppet_run_style == 'service' {
