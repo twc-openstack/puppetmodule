@@ -42,11 +42,20 @@ class puppet::passenger(
   $certname,
   $conf_dir,
   $dns_alt_names,
-  $config_addon = ''
+  $config_addon = '',
+  $passenger_max_pool_size,
+  $passenger_high_performance,
+  $passenger_max_requests,
+  $passenger_stat_throttle_rate,
 ){
   include apache
   include puppet::params
-  class { 'apache::mod::passenger': passenger_max_pool_size => 12, }
+  class { 'apache::mod::passenger':
+    passenger_max_pool_size      => $passenger_max_pool_size,
+    passenger_high_performance   => $passenger_high_performance,
+    passenger_max_requests       => $passenger_max_requests,
+    passenger_stat_throttle_rate => $passenger_stat_throttle_rate,
+  }
   include apache::mod::ssl
 
   if $::osfamily == 'redhat' {
