@@ -6,8 +6,8 @@ class{ 'puppet::passenger':
   puppet_conf => '/etc/puppet/puppet.conf',
   puppet_ssldir => '/var/lib/puppet/ssl',
   certname => 'master.example.com',
-  passenger_max_pool_size => 4,
+  passenger_max_pool_size => '4',
   passenger_high_performance => true,
-  passenger_max_requests => 1000,
-  passenger_stat_throttle_rate => 30,
+  passenger_max_requests => '1000',
+  passenger_stat_throttle_rate => '30',
 }
