@@ -3,14 +3,19 @@ require 'spec_helper'
 describe 'puppet::passenger', :type => :class do
       let (:params) do
             {
-                :puppet_passenger_port  => '8140',
-                :puppet_docroot         => '/etc/puppet/rack/public/',
-                :apache_serveradmin     => 'root',
-                :puppet_conf            => '/etc/puppet/puppet.conf',
-                :puppet_ssldir          => '/var/lib/puppet/ssl',
-                :certname               => 'test.test.com',
-                :conf_dir               => '/etc/puppet',
-                :dns_alt_names          => ['puppet'],
+                :puppet_passenger_port        => '8140',
+                :puppet_docroot               => '/etc/puppet/rack/public/',
+                :apache_serveradmin           => 'root',
+                :puppet_conf                  => '/etc/puppet/puppet.conf',
+                :puppet_ssldir                => '/var/lib/puppet/ssl',
+                :certname                     => 'test.test.com',
+                :conf_dir                     => '/etc/puppet',
+                :dns_alt_names                => ['puppet'],
+                :passenger_max_pool_size      => '4',
+                :passenger_high_performance   => true,
+                :passenger_max_requests       => '1000',
+                :passenger_stat_throttle_rate => '30',
+
         }
         end
     context 'on Debian' do
