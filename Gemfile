@@ -1,7 +1,11 @@
 # A sample Gemfile
 source "https://rubygems.org"
 
-gem 'puppet', '< 4.0.0'
+if puppetversion = ENV['PUPPET_GEM_VERSION']
+      gem 'puppet', puppetversion
+else
+      gem 'puppet', '< 4.0.0'
+end
 
 gem 'rake'
 gem 'rspec'
