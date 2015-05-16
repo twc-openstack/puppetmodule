@@ -10,8 +10,11 @@ end
 gem 'rake'
 gem 'rspec'
 gem 'puppet-lint'
-gem 'beaker'
-gem 'beaker-rspec'
 gem 'rspec-puppet'
 gem 'puppetlabs_spec_helper'
 gem 'puppet-syntax'
+
+group :system_tests do
+  gem 'beaker'
+  gem 'beaker-rspec'
+end
