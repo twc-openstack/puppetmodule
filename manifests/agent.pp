@@ -35,6 +35,8 @@
 #   ['cron_minute']           - What minute to run if puppet_run_style is cron
 #   ['serialization_format']  - defaults to undef, otherwise it sets the preferred_serialization_format param (currently only msgpack is supported)
 #   ['serialization_package'] - defaults to undef, if provided, we install this package, otherwise we fall back to the gem from 'serialization_format'
+#   ['http_proxy_host']       - The hostname of an HTTP proxy to use for agent -> master connections
+#   ['http_proxy_port']       - The port to use when puppet uses an HTTP proxy
 #
 # Actions:
 # - Install and configures the puppet agent
