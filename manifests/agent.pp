@@ -33,6 +33,8 @@
 #   ['stringify_facts']       - Wether puppet transforms structured facts in strings or no. Defaults to true in puppet < 4, deprecated in puppet >=4 (and will default to false)
 #   ['cron_hour']             - What hour to run if puppet_run_style is cron
 #   ['cron_minute']           - What minute to run if puppet_run_style is cron
+#   ['serialization_format']  - defaults to undef, otherwise it sets the preferred_serialization_format param (currently only msgpack is supported)
+#   ['serialization_package'] - defaults to undef, if provided, we install this package, otherwise we fall back to the gem from 'serialization_format'
 #
 # Actions:
 # - Install and configures the puppet agent
@@ -93,6 +95,8 @@ class puppet::agent(
   $http_proxy_port        = undef,
   $cron_hour              = '*',
   $cron_minute            = undef,
+  $serialization_format   = undef,
+  $serialization_package  = undef,
 ) inherits puppet::params {
 
   if ! defined(User[$::puppet::params::puppet_user]) {
@@ -218,6 +222,7 @@ class puppet::agent(
       path    => $::puppet::params::puppet_conf,
       require => File[$::puppet::params::puppet_conf],
       section => 'agent',
+      ensure  => present,
   }
 
   if (($use_srv_records == true) and ($srv_domain == undef))
@@ -227,7 +232,6 @@ class puppet::agent(
   elsif (($use_srv_records == true) and ($srv_domain != undef))
   {
     ini_setting {'puppetagentsrv_domain':
-      ensure  => present,
       setting => 'srv_domain',
       value   => $srv_domain,
     }
@@ -264,31 +268,26 @@ class puppet::agent(
   }
 
   ini_setting {'puppetagentenvironment':
-    ensure  => present,
     setting => 'environment',
     value   => $environment,
   }
 
   ini_setting {'puppetagentmaster':
-    ensure  => present,
     setting => 'server',
     value   => $puppet_server,
   }
 
   ini_setting {'puppetagentuse_srv_records':
-    ensure  => present,
     setting => 'use_srv_records',
     value   => $use_srv_records,
   }
 
   ini_setting {'puppetagentruninterval':
-    ensure  => present,
     setting => 'runinterval',
     value   => $runinterval,
   }
 
   ini_setting {'puppetagentsplay':
-    ensure  => present,
     setting => 'splay',
     value   => $splay,
   }
@@ -306,39 +305,32 @@ class puppet::agent(
   }
 
   ini_setting {'puppetmasterport':
-    ensure  => present,
     setting => 'masterport',
     value   => $puppet_server_port,
   }
   ini_setting {'puppetagentreport':
-    ensure  => present,
     setting => 'report',
     value   => $report,
   }
   ini_setting {'puppetagentpluginsync':
-    ensure  => present,
     setting => 'pluginsync',
     value   => $pluginsync,
   }
   ini_setting {'puppetagentlisten':
-    ensure  => present,
     setting => 'listen',
     value   => $listen,
   }
   ini_setting {'puppetagentreportserver':
-    ensure  => present,
     setting => 'reportserver',
     value   => $reportserver,
   }
   ini_setting {'puppetagentdigestalgorithm':
-    ensure  => present,
     setting => 'digest_algorithm',
     value   => $digest_algorithm,
   }
   if ($templatedir != undef) and ($templatedir != 'undef')
   {
     ini_setting {'puppetagenttemplatedir':
-      ensure  => present,
       setting => 'templatedir',
       section => 'main',
       value   => $templatedir,
@@ -353,13 +345,11 @@ class puppet::agent(
     }
   }
   ini_setting {'puppetagentconfigtimeout':
-    ensure  => present,
     setting => 'configtimeout',
     value   => $configtimeout,
   }
   if $stringify_facts != undef {
     ini_setting {'puppetagentstringifyfacts':
-      ensure  => present,
       setting => 'stringify_facts',
       value   => $stringify_facts,
     }
@@ -428,6 +418,37 @@ class puppet::agent(
       ensure  => present,
       setting => 'http_proxy_port',
       value   => $http_proxy_port,
+    }
+  }
+  if $serialization_format != undef {
+    if $serialization_package != undef {
+      package { $serialization_package:
+        ensure  => latest,
+      }
+    } else {
+      if $serialization_format == 'msgpack' {
+        unless defined(Package[$::puppet::params::ruby_dev]) {
+          package {$::puppet::params::ruby_dev:
+            ensure  => 'latest',
+          }
+        }
+        unless defined(Package['gcc']) {
+          package {'gcc':
+            ensure  => 'latest',
+          }
+        }
+        unless defined(Package['msgpack']) {
+          package {'msgpack':
+            ensure    => 'latest',
+            provider  => 'gem',
+            require   => Package[$::puppet::params::ruby_dev, 'gcc'],
+          }
+        }
+      }
+    }
+    ini_setting {'puppetagentserializationformatagent':
+      setting => 'preferred_serialization_format',
+      value   => $serialization_format,
     }
   }
 }
