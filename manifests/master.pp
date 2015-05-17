@@ -35,6 +35,7 @@
 #  ['generate_ssl_certs']       - Generate ssl certs (false to disable)
 #  ['strict_variables']         - Makes the parser raise errors when referencing unknown variables
 #  ['always_cache_features']    - if false (default), always try to load a feature even if a previous load failed
+#  ['serialization_format']     - defaults to undef, otherwise it sets the preferred_serialization_format param (currently only msgpack is supported)
 #
 # Requires:
 #
@@ -96,8 +97,7 @@ class puppet::master (
   $passenger_high_performance   = true,
   $passenger_max_requests       = 10000,
   $passenger_stat_throttle_rate = 30,
-
-
+  $serialization_format       = undef,
 ) inherits puppet::params {
 
   anchor { 'puppet::master::begin': }
@@ -339,12 +339,42 @@ class puppet::master (
       value   => $strict_variables,
     }
   }
-
   validate_bool(str2bool($always_cache_features))
   ini_setting { 'puppetmasteralwayscachefeatures':
     ensure  => present,
     setting => 'always_cache_features',
     value   => $always_cache_features,
+  }
+  if $serialization_format != undef {
+    if $serialization_package != undef {
+      package { $serialization_package:
+        ensure  => latest,
+      }
+    } else {
+      if $serialization_format == 'msgpack' {
+        unless defined(Package[$::puppet::params::ruby_dev]) {
+          package {$::puppet::params::ruby_dev:
+            ensure  => 'latest',
+          }
+        }
+        unless defined(Package['gcc']) {
+          package {'gcc':
+            ensure  => 'latest',
+          }
+        }
+        unless defined(Package['msgpack']) {
+          package {'msgpack':
+            ensure  => 'latest',
+            provider => 'gem',
+            require   => Package[$::puppet::params::ruby_dev, 'gcc'],
+          }
+        }
+      }
+    }
+    ini_setting {'puppetagentserializationformatmaster':
+      setting => 'preferred_serialization_format',
+      value   => $serialization_format,
+    }
   }
   anchor { 'puppet::master::end': }
 }
