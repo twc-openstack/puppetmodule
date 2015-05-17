@@ -72,10 +72,10 @@ describe 'puppet::master', :type => :class do
                 :notify => 'Service[httpd]'
             )
             should contain_class('puppet::storeconfigs').with(
-              :before => 'Anchor[puppet::master::end]'
+              :before => ['Anchor[puppet::master::end]']
             )
             should contain_class('puppet::passenger').with(
-              :before => 'Anchor[puppet::master::end]'
+              :before => ['Anchor[puppet::master::end]']
             )
             should contain_ini_setting('puppetmasterenvironmentpath').with(
                 :ensure  => 'absent',
@@ -240,10 +240,10 @@ describe 'puppet::master', :type => :class do
                 :notify => 'Service[httpd]'
             )
             should contain_class('puppet::storeconfigs').with(
-              :before => 'Anchor[puppet::master::end]'
+              :before => ['Anchor[puppet::master::end]']
             )
             should contain_class('puppet::passenger').with(
-              :before => 'Anchor[puppet::master::end]'
+              :before => ['Anchor[puppet::master::end]']
             )
             should contain_ini_setting('puppetmasterenvironmentpath').with(
                 :ensure  => 'absent'
