@@ -36,6 +36,7 @@
 #  ['strict_variables']         - Makes the parser raise errors when referencing unknown variables
 #  ['always_cache_features']    - if false (default), always try to load a feature even if a previous load failed
 #  ['serialization_format']     - defaults to undef, otherwise it sets the preferred_serialization_format param (currently only msgpack is supported)
+#  ['serialization_package']    - defaults to undef, if provided, we install this package, otherwise we fall back to the gem from 'serialization_format'
 #
 # Requires:
 #
@@ -97,7 +98,8 @@ class puppet::master (
   $passenger_high_performance   = true,
   $passenger_max_requests       = 10000,
   $passenger_stat_throttle_rate = 30,
-  $serialization_format       = undef,
+  $serialization_format         = undef,
+  $serialization_package        = undef,
 ) inherits puppet::params {
 
   anchor { 'puppet::master::begin': }
@@ -364,9 +366,9 @@ class puppet::master (
         }
         unless defined(Package['msgpack']) {
           package {'msgpack':
-            ensure  => 'latest',
+            ensure   => 'latest',
             provider => 'gem',
-            require   => Package[$::puppet::params::ruby_dev, 'gcc'],
+            require  => Package[$::puppet::params::ruby_dev, 'gcc'],
           }
         }
       }
