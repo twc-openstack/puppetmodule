@@ -9,6 +9,8 @@ describe 'puppet::master', :type => :class do
                 :operatingsystem => 'Debian',
                 :operatingsystemrelease => '5',
                 :concat_basedir => '/nde',
+                :lsbdistcodename => 'lenny',
+                :processorcount => '2'
             }
         end
         let (:params) do
@@ -178,6 +180,7 @@ describe 'puppet::master', :type => :class do
                 :operatingsystem => 'RedHat',
                 :operatingsystemrelease => '6',
                 :concat_basedir => '/nde',
+                :processorcount => '2'
             }
         end
         let (:params) do
@@ -344,6 +347,7 @@ describe 'puppet::master', :type => :class do
                 :operatingsystem => 'RedHat',
                 :operatingsystemrelease => '6',
                 :concat_basedir => '/nde',
+                :processorcount => '2'
             }
         end
         let (:params) do {
@@ -376,6 +380,7 @@ describe 'puppet::master', :type => :class do
                 :operatingsystem => 'RedHat',
                 :operatingsystemrelease => '6',
                 :concat_basedir => '/nde',
+                :processorcount => '2'
             }
         end
         let (:params) do {

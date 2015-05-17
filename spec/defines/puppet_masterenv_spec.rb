@@ -5,6 +5,11 @@ describe 'puppet::masterenv', :type => :define do
     let :title do
       'dev'
     end
+    let :facts do
+      {
+        :processorcount => '2'
+      }
+    end
 
     let :params do
       {
@@ -33,6 +38,11 @@ describe 'puppet::masterenv', :type => :define do
   context "Create directory environment" do
     let :title do
       'dev'
+    end
+    let :facts do
+      {
+        :processorcount => '2'
+      }
     end
 
     let :params do

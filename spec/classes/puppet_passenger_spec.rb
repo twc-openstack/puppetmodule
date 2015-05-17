@@ -24,6 +24,7 @@ describe 'puppet::passenger', :type => :class do
                 :operatingsystem        => 'debian',
                 :operatingsystemrelease => '5',
                 :concat_basedir         => '/dne',
+                :lsbdistcodename        => 'lenny',
             }
         end
          it {

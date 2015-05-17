@@ -7,7 +7,7 @@ describe 'puppet::repo::puppetlabs', :type => :class do
       {
         :osfamily        => 'Debian',
         :lsbdistcodename => 'Precise',
-        :lsbdistid       => 'Ubuntu'
+        :lsbdistid       => 'Ubuntu',
       }
     end
     it 'should contain puppetlabs apt repos' do
