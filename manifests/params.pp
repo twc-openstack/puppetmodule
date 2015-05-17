@@ -31,6 +31,8 @@ class puppet::params {
   $puppetdb_strict_validation       = true
   $environments                     = 'config'
   $digest_algorithm                 = 'md5'
+  $puppet_run_interval              = 30
+  $classfile                        = '$statedir/classes.txt'
 
   # Only used when environments == directory
   $environmentpath                  = "${confdir}/environments"

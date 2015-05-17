@@ -14,6 +14,10 @@
 #   ['user_id']               - The userid of the puppet user
 #   ['group_id']              - The groupid of the puppet group
 #   ['splay']                 - If splay should be enable defaults to false
+#   ['splaylimit']            - The maximum time to delay before runs.
+#   ['classfile']             - The file in which puppet agent stores a list of the classes 
+#                               associated with the retrieved configuration. 
+#   ['logdir']                - The directory in which to store log files
 #   ['environment']           - The environment of the puppet agent
 #   ['report']                - Whether to return reports
 #   ['pluginsync']            - Whethere to have pluginsync
@@ -56,6 +60,7 @@ class puppet::agent(
   $templatedir            = undef,
   $syslogfacility         = undef,
   $priority               = undef,
+  $logdir                 = undef,
 
   #[agent]
   $srv_domain             = undef,
@@ -64,8 +69,13 @@ class puppet::agent(
   $environment            = 'production',
   $puppet_server          = $::puppet::params::puppet_server,
   $use_srv_records        = false,
-  $puppet_run_interval    = 30,
+  $puppet_run_interval    = $::puppet::params::puppet_run_interval,
   $splay                  = false,
+
+  # $splaylimit defaults to $runinterval per Puppetlabs docs:  
+  # http://docs.puppetlabs.com/references/latest/configuration.html#splaylimit
+  $splaylimit             = $::puppet::params::puppet_run_interval,
+  $classfile              = $::puppet::params::classfile,
   $puppet_server_port     = $::puppet::params::puppet_server_port,
   $report                 = true,
   $pluginsync             = true,
@@ -220,7 +230,7 @@ class puppet::agent(
       value   => $srv_domain,
     }
   }
-  elsif($use_srv_records == false)
+ elsif($use_srv_records == false)
   {
     ini_setting {'puppetagentsrv_domain':
       ensure  => absent,
@@ -279,6 +289,18 @@ class puppet::agent(
     ensure  => present,
     setting => 'splay',
     value   => $splay,
+  }
+
+  ini_setting {'puppetagentsplaylimit':
+    ensure  => present,
+    setting => 'splaylimit',
+    value   => $splaylimit,
+  }
+
+  ini_setting {'puppetagentclassfile':
+    ensure  => present,
+    setting => 'classfile',
+    value   => $classfile,
   }
 
   ini_setting {'puppetmasterport':
@@ -381,6 +403,14 @@ class puppet::agent(
       ensure  => present,
       setting => 'priority',
       value   => $priority,
+      section => 'main',
+    }
+  }
+  if $logdir != undef {
+    ini_setting {'puppetagentlogdir':
+      ensure  => present,
+      setting => 'logdir',
+      value   => $logdir,
       section => 'main',
     }
   }
