@@ -33,6 +33,7 @@ class puppet::params {
   $digest_algorithm                 = 'md5'
   $puppet_run_interval              = 30
   $classfile                        = '$statedir/classes.txt'
+  $package_provider                 = undef # falls back to system default
 
   # Only used when environments == directory
   $environmentpath                  = "${confdir}/environments"
