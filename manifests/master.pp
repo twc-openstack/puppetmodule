@@ -95,7 +95,7 @@ class puppet::master (
   $puppetdb_version             = 'present',
   $always_cache_features        = false,
   $passenger_max_pool_size      = $::processorcount,
-  $passenger_high_performance   = true,
+  $passenger_high_performance   = on,
   $passenger_max_requests       = 10000,
   $passenger_stat_throttle_rate = 30,
   $serialization_format         = undef,
