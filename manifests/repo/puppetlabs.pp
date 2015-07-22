@@ -7,7 +7,7 @@ class puppet::repo::puppetlabs() {
   if($::osfamily == 'Debian') {
     Apt::Source {
       location    => 'http://apt.puppetlabs.com',
-      key         => '4BD6EC30',
+      key         => '47B320EB4C7C375AA9DAE1A01054B7A24BD6EC30',
       key_content => template('puppet/pgp.key'),
     }
     apt::source { 'puppetlabs':      repos => 'main' }
