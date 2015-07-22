@@ -50,12 +50,19 @@ class puppet::passenger(
   $passenger_max_requests = 0,
   $passenger_stat_throttle_rate = 10,
 ){
-  #include apache
+
   class { 'apache':
+    default_mods        => false,
+    default_confd_files => false,
+    default_vhost       => false,
     server_tokens       => 'Prod',
     server_signature    => 'Off',
     trace_enable        => 'Off',
-  } ### class
+  }
+
+  apache::mod { 'access_compat': }
+  apache::mod { 'status': package_ensure => 'absent' }
+
   include puppet::params
   class { 'apache::mod::passenger':
     passenger_max_pool_size      => $passenger_max_pool_size,
@@ -63,11 +70,11 @@ class puppet::passenger(
     passenger_max_requests       => $passenger_max_requests,
     passenger_stat_throttle_rate => $passenger_stat_throttle_rate,
   }
-  #include apache::mod::ssl
-  apache::mod::ssl {
+
+  class { 'apache::mod::ssl':
     ssl_protocol => [$puppet_passenger_ssl_protocol],
     ssl_cipher   => $puppet_passenger_ssl_cipher,
-  } ### Apache::Mod::Ssl defaults
+  }
 
   if $::osfamily == 'redhat' {
     file { '/var/lib/puppet/reports':
