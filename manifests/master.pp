@@ -78,6 +78,8 @@ class puppet::master (
   $puppet_docroot               = $::puppet::params::puppet_docroot,
   $puppet_vardir                = $::puppet::params::puppet_vardir,
   $puppet_passenger_port        = $::puppet::params::puppet_passenger_port,
+  $puppet_passenger_ssl_protocol = $::puppet::params::puppet_passenger_ssl_protocol
+  $puppet_passenger_ssl_cipher   = $::puppet::params::puppet_passenger_ssl_cipher
   $puppet_passenger_tempdir     = false,
   $puppet_passenger_cfg_addon   = '',
   $puppet_master_package        = $::puppet::params::puppet_master_package,

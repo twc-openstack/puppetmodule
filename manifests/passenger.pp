@@ -34,6 +34,8 @@
 class puppet::passenger(
   $generate_ssl_certs = true,
   $puppet_passenger_port,
+  $puppet_passenger_ssl_protocol,
+  $puppet_passenger_ssl_cipher,
   $puppet_passenger_tempdir = false,
   $puppet_docroot,
   $apache_serveradmin,
@@ -48,7 +50,12 @@ class puppet::passenger(
   $passenger_max_requests = 0,
   $passenger_stat_throttle_rate = 10,
 ){
-  include apache
+  #include apache
+  class { 'apache':
+    server_tokens       => 'Prod',
+    server_signature    => 'Off',
+    trace_enable        => 'Off',
+  } ### class
   include puppet::params
   class { 'apache::mod::passenger':
     passenger_max_pool_size      => $passenger_max_pool_size,
@@ -56,7 +63,11 @@ class puppet::passenger(
     passenger_max_requests       => $passenger_max_requests,
     passenger_stat_throttle_rate => $passenger_stat_throttle_rate,
   }
-  include apache::mod::ssl
+  #include apache::mod::ssl
+  apache::mod::ssl {
+    ssl_protocol => [$puppet_passenger_ssl_protocol],
+    ssl_cipher   => $puppet_passenger_ssl_cipher,
+  } ### Apache::Mod::Ssl defaults
 
   if $::osfamily == 'redhat' {
     file { '/var/lib/puppet/reports':
@@ -121,8 +132,8 @@ class puppet::passenger(
     ssl_chain            => "${puppet_ssldir}/ca/ca_crt.pem",
     ssl_ca               => "${puppet_ssldir}/ca/ca_crt.pem",
     ssl_crl              => "${puppet_ssldir}/ca/ca_crl.pem",
-    ssl_protocol         => 'ALL -SSLv2 -SSLv3',
-    ssl_cipher           => 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!3DES:!MD5:!PSK',
+    ssl_protocol         => $::puppet::params::ssl_protocol,
+    ssl_cipher           => $::puppet::params::ssl_cipher,
     ssl_honorcipherorder => 'On',
     ssl_verify_client    => 'optional',
     ssl_verify_depth     => '1',
