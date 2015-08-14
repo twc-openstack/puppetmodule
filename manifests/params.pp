@@ -35,6 +35,9 @@ class puppet::params {
   $classfile                        = '$statedir/classes.txt'
   $package_provider                 = undef # falls back to system default
 
+  $puppet_passenger_ssl_protocol    = 'TLSv1.2'
+  $puppet_passenger_ssl_cipher      = 'AES256+EECDH:AES256+EDH'
+
   # Only used when environments == directory
   $environmentpath                  = "${confdir}/environments"
 

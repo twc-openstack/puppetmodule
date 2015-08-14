@@ -14,12 +14,12 @@ describe 'puppet::repo::puppetlabs', :type => :class do
       should contain_apt__source('puppetlabs').with(
         :repos      => 'main',
         :location   => 'http://apt.puppetlabs.com',
-        :key        => '4BD6EC30'
+        :key        => '47B320EB4C7C375AA9DAE1A01054B7A24BD6EC30'
       )
       should contain_apt__source('puppetlabs-deps').with(
         :repos      => 'dependencies',
         :location   => 'http://apt.puppetlabs.com',
-        :key        => '4BD6EC30'
+        :key        => '47B320EB4C7C375AA9DAE1A01054B7A24BD6EC30'
       )
     end
   end
