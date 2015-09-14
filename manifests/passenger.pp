@@ -60,7 +60,6 @@ class puppet::passenger(
     trace_enable        => 'Off',
   }
 
-  apache::mod { 'access_compat': }
   apache::mod { 'status': package_ensure => 'absent' }
 
   include puppet::params
