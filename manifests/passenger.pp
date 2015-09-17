@@ -49,6 +49,7 @@ class puppet::passenger(
   $passenger_high_performance = 'off',
   $passenger_max_requests = 0,
   $passenger_stat_throttle_rate = 10,
+  $passenger_root,
 ){
 
   class { 'apache':
@@ -68,6 +69,7 @@ class puppet::passenger(
     passenger_high_performance   => $passenger_high_performance,
     passenger_max_requests       => $passenger_max_requests,
     passenger_stat_throttle_rate => $passenger_stat_throttle_rate,
+    passenger_root               => $passenger_root,
   }
 
   class { 'apache::mod::ssl':
