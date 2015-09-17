@@ -8,8 +8,8 @@ class puppet::repo::puppetlabs() {
     Apt::Source {
       location    => 'http://apt.puppetlabs.com',
       key         => {
-        id      => '47B320EB4C7C375AA9DAE1A01054B7A24BD6EC30',
-        content => template('puppet/pgp.key')
+        'id'     => '47B320EB4C7C375AA9DAE1A01054B7A24BD6EC30',
+        'server' => 'pgp.mit.edu',
       },
     }
     apt::source { 'puppetlabs':      repos => 'main' }
