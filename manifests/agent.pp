@@ -37,6 +37,9 @@
 #   ['serialization_package'] - defaults to undef, if provided, we install this package, otherwise we fall back to the gem from 'serialization_format'
 #   ['http_proxy_host']       - The hostname of an HTTP proxy to use for agent -> master connections
 #   ['http_proxy_port']       - The port to use when puppet uses an HTTP proxy
+#   ['localconfig']           - Where puppet agent caches the local configuration. An extension indicating the cache format is added automatically.
+#   ['rundir']                - Where Puppet PID files are kept.
+#   ['puppet_ssldir']         - Puppet sll directory
 #
 # Actions:
 # - Install and configures the puppet agent
@@ -66,6 +69,7 @@ class puppet::agent(
   $syslogfacility         = undef,
   $priority               = undef,
   $logdir                 = undef,
+  $rundir                 = $::puppet::params::rundir,
 
   #[agent]
   $srv_domain             = undef,
@@ -99,6 +103,8 @@ class puppet::agent(
   $cron_minute            = undef,
   $serialization_format   = undef,
   $serialization_package  = undef,
+  $localconfig            = undef,
+  $puppet_ssldir          = $::puppet::params::puppet_ssldir,
 ) inherits puppet::params {
 
   if ! defined(User[$::puppet::params::puppet_user]) {
@@ -252,6 +258,30 @@ class puppet::agent(
   }else {
     $orderign_ensure = 'absent'
   }
+  if $localconfig != undef {
+    ini_setting {'puppetagentlocalconfig':
+      ensure  => present,
+      setting => 'localconfig',
+      value   => $localconfig,
+    }
+  }
+  if $puppet_ssldir != undef {
+    ini_setting {'puppetagentsldir':
+      ensure  => present,
+      section => 'main',
+      setting => 'ssldir',
+      value   => $puppet_ssldir,
+    }
+  }
+  
+  # rundir has no default and must be provided.
+  ini_setting {'puppetagentrundir':
+    ensure  => present,
+    section => 'main',
+    setting => 'rundir',
+    value   => $rundir,
+  }
+
   ini_setting {'puppetagentordering':
     ensure  => $orderign_ensure,
     setting => 'ordering',
