@@ -34,7 +34,7 @@ class puppet::params {
   $puppet_run_interval              = 30
   $classfile                        = '$statedir/classes.txt'
   $package_provider                 = undef # falls back to system default
-
+  $rundir                           = '/var/run/puppet'
   $puppet_passenger_ssl_protocol    = 'TLSv1.2'
   $puppet_passenger_ssl_cipher      = 'AES256+EECDH:AES256+EDH'
 
