@@ -78,3 +78,21 @@
   * Add new metadata file for puppetforge  <Stephen Johnson>
 2014-12-31 Stephen Johnson <steve@thatbytes.co.uk> - 1.3.1
   * Cleanup some lint items <Stephen Johnson>
+2015-01-15 Stephen Johnson <steve@thatbytes.co.uk> - 1.4.0
+  * Add support for strict variables <Robin Bowes>
+  * Add puppetdb_version parameter to master,storeconfigs & tests <Kelvin Jasperson>
+  * Add Verbose, noop and usecacheonfailure options to agents on puppet.conf <Patrick Brideau>
+  * Add syslogfacility to puppet agent options <Patrick Brideau>
+  * Add certname option to puppet agent <Patrick Brideau>
+  * Add preferred_serialization_format and msgpack support <Tim Meusel>
+  * Add support for agent http_proxy_host and http_proxy_port options <Rick Fletcher>
+  * Aadd always_cache_features support <Tim Meusel>
+  * Allow new cron specification <Dougal Scott>
+  * Aadd the ability to install a package on the master <Tim Meusel>
+  * Added option to passenger to add custom stuff on the config.ru file. <talamoig>
+  * Add support for specifying tuning parameters for Passenger <Jonathan Gazeley>
+  * Test future parser and re-enable puppet 4 testing <Pall Valmundsson>
+  * Make the rspec test pass on 4.0
+  * Add strict variable testing for puppet 4.0.x <Pall Valmundsson>
+  * Set Passenger SSL protocol to TLS1.2-only <Devon Hubner>
+  * PCI-DSSv3 requirements <Devon Hubner>
