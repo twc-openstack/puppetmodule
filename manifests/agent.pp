@@ -1,4 +1,4 @@
-# Class: puppet::agent
+# Class: puppet_old::agent
 #
 # This class installs and configures the puppet agent
 #
@@ -35,17 +35,17 @@
 # - Inifile
 #
 # Sample Usage:
-#   class { 'puppet::agent':
+#   class { 'puppet_old::agent':
 #       puppet_server             => master.puppetlabs.vm,
 #       environment               => production,
 #       splay                     => true,
 #   }
 #
-class puppet::agent(
-  $puppet_server          = $::puppet::params::puppet_server,
-  $puppet_server_port     = $::puppet::params::puppet_server_port,
-  $puppet_agent_service   = $::puppet::params::puppet_agent_service,
-  $puppet_agent_package   = $::puppet::params::puppet_agent_package,
+class puppet_old::agent(
+  $puppet_server          = $::puppet_old::params::puppet_server,
+  $puppet_server_port     = $::puppet_old::params::puppet_server_port,
+  $puppet_agent_service   = $::puppet_old::params::puppet_agent_service,
+  $puppet_agent_package   = $::puppet_old::params::puppet_agent_package,
   $version                = 'present',
   $puppet_run_style       = 'service',
   $puppet_run_interval    = 30,
@@ -63,21 +63,21 @@ class puppet::agent(
   $trusted_node_data      = undef,
   $listen                 = false,
   $reportserver           = '$server',
-  $digest_algorithm       = $::puppet::params::digest_algorithm,
+  $digest_algorithm       = $::puppet_old::params::digest_algorithm,
   $configtimeout          = '2m',
   $stringify_facts        = undef,
-) inherits puppet::params {
+) inherits puppet_old::params {
 
-  if ! defined(User[$::puppet::params::puppet_user]) {
-    user { $::puppet::params::puppet_user:
+  if ! defined(User[$::puppet_old::params::puppet_user]) {
+    user { $::puppet_old::params::puppet_user:
       ensure => present,
       uid    => $user_id,
-      gid    => $::puppet::params::puppet_group,
+      gid    => $::puppet_old::params::puppet_group,
     }
   }
 
-  if ! defined(Group[$::puppet::params::puppet_group]) {
-    group { $::puppet::params::puppet_group:
+  if ! defined(Group[$::puppet_old::params::puppet_group]) {
+    group { $::puppet_old::params::puppet_group:
       ensure => present,
       gid    => $group_id,
     }
@@ -94,21 +94,21 @@ class puppet::agent(
   }
 
   if ($::osfamily == 'Debian' and $puppet_run_style != 'manual') or ($::osfamily == 'Redhat') {
-    file { $puppet::params::puppet_defaults:
+    file { $puppet_old::params::puppet_defaults:
       mode    => '0644',
       owner   => 'root',
       group   => 'root',
       require => Package[$puppet_agent_package],
-      content => template("puppet/${puppet::params::puppet_defaults}.erb"),
+      content => template("puppet_old/${puppet_old::params::puppet_defaults}.erb"),
     }
   }
 
-  if ! defined(File[$::puppet::params::confdir]) {
-    file { $::puppet::params::confdir:
+  if ! defined(File[$::puppet_old::params::confdir]) {
+    file { $::puppet_old::params::confdir:
       ensure  => directory,
       require => Package[$puppet_agent_package],
-      owner   => $::puppet::params::puppet_user,
-      group   => $::puppet::params::puppet_group,
+      owner   => $::puppet_old::params::puppet_user,
+      group   => $::puppet_old::params::puppet_group,
       mode    => '0655',
     }
   }
@@ -148,7 +148,7 @@ class puppet::agent(
       $service_enable = undef
     }
     default: {
-      err('Unsupported puppet run style in Class[\'puppet::agent\']')
+      err('Unsupported puppet run style in Class[\'puppet_old::agent\']')
     }
   }
 
@@ -158,23 +158,23 @@ class puppet::agent(
       enable     => $service_enable,
       hasstatus  => true,
       hasrestart => true,
-      subscribe  => [File[$::puppet::params::puppet_conf], File[$::puppet::params::confdir]],
+      subscribe  => [File[$::puppet_old::params::puppet_conf], File[$::puppet_old::params::confdir]],
       require    => Package[$puppet_agent_package],
     }
   }
 
-  if ! defined(File[$::puppet::params::puppet_conf]) {
-      file { $::puppet::params::puppet_conf:
+  if ! defined(File[$::puppet_old::params::puppet_conf]) {
+      file { $::puppet_old::params::puppet_conf:
         ensure  => 'file',
         mode    => '0644',
-        require => File[$::puppet::params::confdir],
-        owner   => $::puppet::params::puppet_user,
-        group   => $::puppet::params::puppet_group,
+        require => File[$::puppet_old::params::confdir],
+        owner   => $::puppet_old::params::puppet_user,
+        group   => $::puppet_old::params::puppet_group,
       }
     }
     else {
       if $puppet_run_style == 'service' {
-        File<| title == $::puppet::params::puppet_conf |> {
+        File<| title == $::puppet_old::params::puppet_conf |> {
           notify  +> Service[$puppet_agent_service],
         }
       }
@@ -184,8 +184,8 @@ class puppet::agent(
   $runinterval = $puppet_run_interval * 60
 
   Ini_setting {
-      path    => $::puppet::params::puppet_conf,
-      require => File[$::puppet::params::puppet_conf],
+      path    => $::puppet_old::params::puppet_conf,
+      require => File[$::puppet_old::params::puppet_conf],
       section => 'agent',
   }
 

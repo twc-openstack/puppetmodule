@@ -1,0 +1,3 @@
+This is a renamed version of stephenrjohnson's puppet module.  In order to help
+move to a new one, the classes have been renamed to puppet_old.  Don't use this
+for anything new.

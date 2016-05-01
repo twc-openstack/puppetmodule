@@ -1,4 +1,4 @@
-# Class: puppet::params
+# Class: puppet_old::params
 #
 # This class installs and configures parameters for Puppet
 #
@@ -10,7 +10,7 @@
 #
 # Sample Usage:
 #
-class puppet::params {
+class puppet_old::params {
 
   $puppet_server                    = 'puppet'
   $modulepath                       = '/etc/puppet/modules'

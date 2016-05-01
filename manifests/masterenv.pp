@@ -1,4 +1,4 @@
-# Define: puppet::masterenv
+# Define: puppet_old::masterenv
 #
 # This define configures puppet master environment
 #
@@ -13,17 +13,17 @@
 # - Inifile
 #
 # Sample Usage:
-#   puppet::masterenv{ 'dev':
+#   puppet_old::masterenv{ 'dev':
 #       modulepath             => '/etc/puppet/modules'
 #       manifest               => 'dev'
 #   }
 #
-define  puppet::masterenv (
+define  puppet_old::masterenv (
   $modulepath,
   $manifest,
-  $puppet_conf = $::puppet::params::puppet_conf,
-  $environments = $::puppet::master::environments,
-  $environmentpath = $::puppet::master::environmentpath
+  $puppet_conf = $::puppet_old::params::puppet_conf,
+  $environments = $::puppet_old::master::environments,
+  $environmentpath = $::puppet_old::master::environmentpath
 ) {
 
   case $environments {
@@ -43,7 +43,7 @@ define  puppet::masterenv (
   Ini_setting {
       path    => $path,
       section => $section,
-      require => [File[$puppet_conf], Class['puppet::master']],
+      require => [File[$puppet_conf], Class['puppet_old::master']],
       notify  => Service['httpd'],
   }
 

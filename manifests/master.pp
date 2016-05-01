@@ -1,4 +1,4 @@
-# Class: puppet::master
+# Class: puppet_old::master
 #
 # This class installs and configures a Puppet master
 #
@@ -37,9 +37,9 @@
 # Requires:
 #
 #  - inifile
-#  - Class['puppet::params']
-#  - Class[puppet::passenger]
-#  - Class['puppet::storeconfigs']
+#  - Class['puppet_old::params']
+#  - Class[puppet_old::passenger]
+#  - Class['puppet_old::storeconfigs']
 #
 # Sample Usage:
 #
@@ -48,58 +48,58 @@
 #    "/etc/puppet/modules/dist",
 #  ]
 #
-#  class { "puppet::master":
+#  class { "puppet_old::master":
 #    modulepath             => inline_template("<%= modulepath.join(':') %>"),
 #    storeconfigs          => 'true',
 #  }
 #
-class puppet::master (
+class puppet_old::master (
   $user_id                    = undef,
   $group_id                   = undef,
-  $modulepath                 = $::puppet::params::modulepath,
-  $manifest                   = $::puppet::params::manifest,
+  $modulepath                 = $::puppet_old::params::modulepath,
+  $manifest                   = $::puppet_old::params::manifest,
   $external_nodes             = undef,
   $node_terminus              = undef,
-  $hiera_config               = $::puppet::params::hiera_config,
-  $environmentpath            = $::puppet::params::environmentpath,
-  $environments               = $::puppet::params::environments,
+  $hiera_config               = $::puppet_old::params::hiera_config,
+  $environmentpath            = $::puppet_old::params::environmentpath,
+  $environments               = $::puppet_old::params::environments,
   $reports                    = store,
   $storeconfigs               = false,
-  $storeconfigs_dbserver      = $::puppet::params::storeconfigs_dbserver,
-  $storeconfigs_dbport        = $::puppet::params::storeconfigs_dbport,
+  $storeconfigs_dbserver      = $::puppet_old::params::storeconfigs_dbserver,
+  $storeconfigs_dbport        = $::puppet_old::params::storeconfigs_dbport,
   $certname                   = $::fqdn,
   $autosign                   = false,
   $reporturl                  = undef,
-  $puppet_ssldir              = $::puppet::params::puppet_ssldir,
-  $puppet_docroot             = $::puppet::params::puppet_docroot,
-  $puppet_vardir              = $::puppet::params::puppet_vardir,
-  $puppet_passenger_port      = $::puppet::params::puppet_passenger_port,
+  $puppet_ssldir              = $::puppet_old::params::puppet_ssldir,
+  $puppet_docroot             = $::puppet_old::params::puppet_docroot,
+  $puppet_vardir              = $::puppet_old::params::puppet_vardir,
+  $puppet_passenger_port      = $::puppet_old::params::puppet_passenger_port,
   $puppet_passenger_tempdir   = false,
-  $puppet_master_package      = $::puppet::params::puppet_master_package,
-  $puppet_master_service      = $::puppet::params::puppet_master_service,
+  $puppet_master_package      = $::puppet_old::params::puppet_master_package,
+  $puppet_master_service      = $::puppet_old::params::puppet_master_service,
   $version                    = 'present',
-  $apache_serveradmin         = $::puppet::params::apache_serveradmin,
+  $apache_serveradmin         = $::puppet_old::params::apache_serveradmin,
   $pluginsync                 = true,
-  $parser                     = $::puppet::params::parser,
+  $parser                     = $::puppet_old::params::parser,
   $puppetdb_startup_timeout   = '60',
-  $puppetdb_strict_validation = $::puppet::params::puppetdb_strict_validation,
+  $puppetdb_strict_validation = $::puppet_old::params::puppetdb_strict_validation,
   $dns_alt_names              = ['puppet'],
-  $digest_algorithm           = $::puppet::params::digest_algorithm,
+  $digest_algorithm           = $::puppet_old::params::digest_algorithm,
   $generate_ssl_certs         = true,
-) inherits puppet::params {
+) inherits puppet_old::params {
 
-  anchor { 'puppet::master::begin': }
+  anchor { 'puppet_old::master::begin': }
 
-  if ! defined(User[$::puppet::params::puppet_user]) {
-    user { $::puppet::params::puppet_user:
+  if ! defined(User[$::puppet_old::params::puppet_user]) {
+    user { $::puppet_old::params::puppet_user:
       ensure => present,
       uid    => $user_id,
-      gid    => $::puppet::params::puppet_group,
+      gid    => $::puppet_old::params::puppet_group,
     }
   }
 
-  if ! defined(Group[$::puppet::params::puppet_group]) {
-    group { $::puppet::params::puppet_group:
+  if ! defined(Group[$::puppet_old::params::puppet_group]) {
+    group { $::puppet_old::params::puppet_group:
       ensure => present,
       gid    => $group_id,
     }
@@ -122,55 +122,55 @@ class puppet::master (
     }
   }
 
-  Anchor['puppet::master::begin'] ->
-  class {'puppet::passenger':
+  Anchor['puppet_old::master::begin'] ->
+  class {'puppet_old::passenger':
     puppet_passenger_port    => $puppet_passenger_port,
     puppet_docroot           => $puppet_docroot,
     apache_serveradmin       => $apache_serveradmin,
-    puppet_conf              => $::puppet::params::puppet_conf,
+    puppet_conf              => $::puppet_old::params::puppet_conf,
     puppet_ssldir            => $puppet_ssldir,
     certname                 => $certname,
-    conf_dir                 => $::puppet::params::confdir,
+    conf_dir                 => $::puppet_old::params::confdir,
     dns_alt_names            => join($dns_alt_names,','),
     generate_ssl_certs       => $generate_ssl_certs,
     puppet_passenger_tempdir => $puppet_passenger_tempdir,
   } ->
-  Anchor['puppet::master::end']
+  Anchor['puppet_old::master::end']
 
   service { $puppet_master_service:
     ensure  => stopped,
     enable  => false,
-    require => File[$::puppet::params::puppet_conf],
+    require => File[$::puppet_old::params::puppet_conf],
   }
 
-  if ! defined(File[$::puppet::params::puppet_conf]){
-    file { $::puppet::params::puppet_conf:
+  if ! defined(File[$::puppet_old::params::puppet_conf]){
+    file { $::puppet_old::params::puppet_conf:
       ensure  => 'file',
       mode    => '0644',
-      require => File[$::puppet::params::confdir],
-      owner   => $::puppet::params::puppet_user,
-      group   => $::puppet::params::puppet_group,
+      require => File[$::puppet_old::params::confdir],
+      owner   => $::puppet_old::params::puppet_user,
+      group   => $::puppet_old::params::puppet_group,
       notify  => Service['httpd'],
     }
   }
   else {
-    File<| title == $::puppet::params::puppet_conf |> {
+    File<| title == $::puppet_old::params::puppet_conf |> {
       notify  => Service['httpd'],
     }
   }
 
-  if ! defined(File[$::puppet::params::confdir]) {
-    file { $::puppet::params::confdir:
+  if ! defined(File[$::puppet_old::params::confdir]) {
+    file { $::puppet_old::params::confdir:
       ensure  => directory,
       mode    => '0755',
       require => Package[$puppet_master_package],
-      owner   => $::puppet::params::puppet_user,
-      group   => $::puppet::params::puppet_group,
+      owner   => $::puppet_old::params::puppet_user,
+      group   => $::puppet_old::params::puppet_group,
       notify  => Service['httpd'],
     }
   }
   else {
-    File<| title == $::puppet::params::confdir |> {
+    File<| title == $::puppet_old::params::confdir |> {
       notify  +> Service['httpd'],
       require +> Package[$puppet_master_package],
     }
@@ -178,30 +178,30 @@ class puppet::master (
 
   file { $puppet_vardir:
     ensure  => directory,
-    owner   => $::puppet::params::puppet_user,
-    group   => $::puppet::params::puppet_group,
+    owner   => $::puppet_old::params::puppet_user,
+    group   => $::puppet_old::params::puppet_group,
     notify  => Service['httpd'],
     require => Package[$puppet_master_package]
   }
 
   if $storeconfigs {
-    Anchor['puppet::master::begin'] ->
-    class { 'puppet::storeconfigs':
+    Anchor['puppet_old::master::begin'] ->
+    class { 'puppet_old::storeconfigs':
       dbserver                   => $storeconfigs_dbserver,
       dbport                     => $storeconfigs_dbport,
       puppet_service             => Service['httpd'],
-      puppet_confdir             => $::puppet::params::puppet_confdir,
-      puppet_conf                => $::puppet::params::puppet_conf,
+      puppet_confdir             => $::puppet_old::params::puppet_confdir,
+      puppet_conf                => $::puppet_old::params::puppet_conf,
       puppet_master_package      => $puppet_master_package,
       puppetdb_startup_timeout   => $puppetdb_startup_timeout,
       puppetdb_strict_validation => $puppetdb_strict_validation,
     } ->
-    Anchor['puppet::master::end']
+    Anchor['puppet_old::master::end']
   }
 
   Ini_setting {
-      path    => $::puppet::params::puppet_conf,
-      require => File[$::puppet::params::puppet_conf],
+      path    => $::puppet_old::params::puppet_conf,
+      require => File[$::puppet_old::params::puppet_conf],
       notify  => Service['httpd'],
       section => 'master',
   }
@@ -312,5 +312,5 @@ class puppet::master (
       value   => $digest_algorithm,
   }
 
-  anchor { 'puppet::master::end': }
+  anchor { 'puppet_old::master::end': }
 }

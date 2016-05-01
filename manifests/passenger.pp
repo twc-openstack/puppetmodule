@@ -1,4 +1,4 @@
-# Class: puppet::passenger
+# Class: puppet_old::passenger
 #
 # This class installs and configures the puppetdb terminus pacakge
 #
@@ -17,11 +17,11 @@
 #
 # Requires:
 # - Inifile
-# - Class['puppet::params']
+# - Class['puppet_old::params']
 # - Class['apache']
 #
 # Sample Usage:
-#   class { 'puppet::passenger':
+#   class { 'puppet_old::passenger':
 #           puppet_passenger_port  => 8140,
 #           puppet_docroot         => '/etc/puppet/docroot',
 #           apache_serveradmin     => 'wibble',
@@ -31,7 +31,7 @@
 #           conf_dir               => '/etc/puppet',
 #   }
 #
-class puppet::passenger(
+class puppet_old::passenger(
   $generate_ssl_certs = true,
   $puppet_passenger_port,
   $puppet_passenger_tempdir = false,
@@ -44,30 +44,30 @@ class puppet::passenger(
   $dns_alt_names
 ){
   include apache
-  include puppet::params
+  include puppet_old::params
   class { 'apache::mod::passenger': passenger_max_pool_size => 12, }
   include apache::mod::ssl
 
   if $::osfamily == 'redhat' {
     file { '/var/lib/puppet/reports':
       ensure => directory,
-      owner  => $::puppet::params::puppet_user,
-      group  => $::puppet::params::puppet_group,
+      owner  => $::puppet_old::params::puppet_user,
+      group  => $::puppet_old::params::puppet_group,
     }
   }
 
   if str2bool($generate_ssl_certs) == true {
     file{"${puppet_ssldir}/ca":
       ensure => directory,
-      owner  => $::puppet::params::puppet_user,
-      group  => $::puppet::params::puppet_group,
+      owner  => $::puppet_old::params::puppet_user,
+      group  => $::puppet_old::params::puppet_group,
       before => Exec['Certificate_Check'],
     }
 
     file{"${puppet_ssldir}/ca/requests":
       ensure => directory,
-      owner  => $::puppet::params::puppet_user,
-      group  => $::puppet::params::puppet_group,
+      owner  => $::puppet_old::params::puppet_user,
+      group  => $::puppet_old::params::puppet_group,
       before => Exec['Certificate_Check'],
     }
     # first we need to generate the cert
@@ -94,8 +94,8 @@ class puppet::passenger(
 
   file { $puppet_docroot:
     ensure => directory,
-    owner  => $::puppet::params::puppet_user,
-    group  => $::puppet::params::puppet_group,
+    owner  => $::puppet_old::params::puppet_user,
+    group  => $::puppet_old::params::puppet_group,
     mode   => '0755',
   }
 
@@ -134,22 +134,22 @@ class puppet::passenger(
   file { 'puppet_passenger.conf':
     ensure  => file,
     path    => "${apache::mod_dir}/puppet_passenger.conf",
-    content => template('puppet/puppet_passenger.conf.erb'),
+    content => template('puppet_old/puppet_passenger.conf.erb'),
     notify  => Service['httpd'],
   }
 
   file { '/etc/puppet/rack':
     ensure => directory,
-    owner  => $::puppet::params::puppet_user,
-    group  => $::puppet::params::puppet_group,
+    owner  => $::puppet_old::params::puppet_user,
+    group  => $::puppet_old::params::puppet_group,
     mode   => '0755',
   }
 
   file { '/etc/puppet/rack/config.ru':
     ensure  => present,
-    owner   => $::puppet::params::puppet_user,
-    group   => $::puppet::params::puppet_group,
-    content => template('puppet/config.erb'),
+    owner   => $::puppet_old::params::puppet_user,
+    group   => $::puppet_old::params::puppet_group,
+    content => template('puppet_old/config.erb'),
     mode    => '0644',
   }
 

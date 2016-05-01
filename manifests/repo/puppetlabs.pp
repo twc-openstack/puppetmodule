@@ -2,7 +2,7 @@
 # This module is used to setup the puppetlabs repos
 # that can be used to install puppet.
 #
-class puppet::repo::puppetlabs() {
+class puppet_old::repo::puppetlabs() {
 
   if($::osfamily == 'Debian') {
     Apt::Source {

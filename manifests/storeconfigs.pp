@@ -1,4 +1,4 @@
-# Class: puppet::storeconfigs
+# Class: puppet_old::storeconfigs
 #
 # This class installs and configures the puppetdb terminus pacakge
 #
@@ -16,26 +16,26 @@
 #
 # Requires:
 # - Inifile
-# - Class['puppet::storeconfigs']
+# - Class['puppet_old::storeconfigs']
 #
 # Sample Usage:
-#   class { 'puppet::storeconfigs':
+#   class { 'puppet_old::storeconfigs':
 #       puppet_service             => Service['httpd'],
 #       dbport                     => 8081,
 #       dbserver                   => 'localhost'
 #       puppet_master_package      => 'puppetmaster'
 #   }
 #
-class puppet::storeconfigs(
+class puppet_old::storeconfigs(
     $dbserver,
     $dbport,
     $puppet_service,
     $puppet_master_package,
     $puppetdb_startup_timeout,
     $puppetdb_strict_validation,
-    $puppet_confdir =  $::puppet::params::confdir,
-    $puppet_conf    =  $::puppet::params::puppet_conf
-)inherits puppet::params {
+    $puppet_confdir =  $::puppet_old::params::confdir,
+    $puppet_conf    =  $::puppet_old::params::puppet_conf
+)inherits puppet_old::params {
 
   ##If we point at a puppetdb on this machine
   if ($dbserver  == 'localhost') or ($dbserver  == '127.0.0.1') or ($dbserver  == $::fqdn)
